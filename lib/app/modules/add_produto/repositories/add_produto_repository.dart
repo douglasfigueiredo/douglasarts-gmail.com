@@ -8,7 +8,7 @@ class AddProdutoRepository extends Disposable {
   AddProdutoRepository(this._hasuraConnect);
 
   Future<TipoCategoriaProdutoDto> getTipoCategoriaProduto() async {
-    var query = '''
+    var query = r'''
         query getTipoCategoriaProdutos {
           tipo_produto {
             id
@@ -27,9 +27,9 @@ class AddProdutoRepository extends Disposable {
 
   Future<bool> addProduto(String descricao, String valor, String selectedTipo,
       String selectedCategoria) async {
-    var mutation = '''
-        mutation addProduto(\$nome: String, \$categoria: uuid, \$tipo: uuid, \$valor: float8) {
-            insert_produto(objects: {nome: \$nome, categoria_produto_id: \$categoria, tipo_produto_id: \$tipo, valor: \$valor}) {
+    var mutation = r'''
+        mutation addProduto($nome: String, $categoria: uuid, $tipo: uuid, $valor: float8) {
+            insert_produto(objects: {nome: $nome, categoria_produto_id: $categoria, tipo_produto_id: $tipo, valor: $valor}) {
               affected_rows
             }
           }

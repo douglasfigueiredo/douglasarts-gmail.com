@@ -8,7 +8,7 @@ class HomeRepository extends Disposable {
   HomeRepository(this._hasuraConnect);
 
   Stream<List<ProdutoModel>> getProduto() {
-    var subscription = '''
+    var subscription = r'''
           subscription getProdutos {
             produto {
               id

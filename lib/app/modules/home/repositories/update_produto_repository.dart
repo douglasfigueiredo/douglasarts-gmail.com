@@ -9,8 +9,8 @@ class UpdateProdutoRepository extends Disposable {
 
   Future<ProdutoTipoCategoriaProdutoDto> getProdutoTipoCategoriaProduto(
       String idProduto) async {
-    var query = '''
-        query getProdutoTipoCategoriaProdutos(\$idProduto: uuid!) {
+    var query = r'''
+        query getProdutoTipoCategoriaProdutos($idProduto: uuid!) {
             tipo_produto {
               id
               descricao
@@ -19,7 +19,7 @@ class UpdateProdutoRepository extends Disposable {
               id
               descricao
             }
-            produto_by_pk(id:\$idProduto) {
+            produto_by_pk(id:$idProduto) {
               id
               nome
               valor
@@ -47,14 +47,14 @@ class UpdateProdutoRepository extends Disposable {
       String selectedTipo,
       String selectedCategoria}) async {
     try {
-      var mutation = '''
-        mutation updateProduto(\$idProduto: uuid, \$nome: String, \$categoria: uuid, \$tipo: uuid, \$valor: float8) {
-          update_produto(where: {id: {_eq: \$idProduto}}, 
+      var mutation = r'''
+        mutation updateProduto($idProduto: uuid, $nome: String, $categoria: uuid, $tipo: uuid, $valor: float8) {
+          update_produto(where: {id: {_eq: $idProduto}}, 
           _set: {
-              nome: \$nome, 
-              tipo_produto_id: \$tipo, 
-              valor: \$valor, 
-              categoria_produto_id: \$categoria
+              nome: $nome, 
+              tipo_produto_id: $tipo, 
+              valor: $valor, 
+              categoria_produto_id: $categoria
           }){
             affected_rows
           }
