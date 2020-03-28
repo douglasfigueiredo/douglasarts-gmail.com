@@ -1,4 +1,4 @@
-package com.example.hasura_graphql_postgress
+package br.com.hasuragraphqlpostgress
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
