@@ -16,6 +16,12 @@ abstract class _AuthControllerBase with Store {
   @observable
   String senha = "";
 
+  @observable
+  String emailError = "";
+
+  @observable
+  String senhaError = "";
+
   @action
   void setEmail(String value) => email = value;
 
