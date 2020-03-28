@@ -136,7 +136,7 @@ class _AuthPageState extends ModularState<AuthPage, AuthController> {
                         ),
                       ),
                       onPressed: () {
-                        Modular.to.pushNamed('/register');
+                        Modular.to.pushNamed('/auth/register');
                       },
                     ),
                   )

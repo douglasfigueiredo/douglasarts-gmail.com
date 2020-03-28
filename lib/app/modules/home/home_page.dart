@@ -19,56 +19,83 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () async {
-              SharedPreferences sharedPreferences =
-                  await SharedPreferences.getInstance();
-              var token = sharedPreferences.setString('token', null);
-              Modular.to.pushReplacementNamed('/auth');
-            },
-          )
-        ],
+    return WillPopScope(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () async {
+                SharedPreferences sharedPreferences =
+                    await SharedPreferences.getInstance();
+                var token = sharedPreferences.setString('token', null);
+                Modular.to.pushReplacementNamed('/auth');
+              },
+            )
+          ],
+        ),
+        body: Observer(
+          builder: (_) {
+            if (controller.listaProdutos.hasError) {
+              return Center(
+                  child: Text("Ocorreu um erro ao realizar essa requisição."));
+            }
+            if (controller.listaProdutos.value == null) {
+              return Center(child: CircularProgressIndicator());
+            }
+            controller.listaProdutos.value.sort((produto1, produto2) => produto1
+                .nome
+                .toLowerCase()
+                .compareTo(produto2.nome.toLowerCase()));
+            return ListView.builder(
+              itemCount: controller.listaProdutos.value.length,
+              itemBuilder: (context, index) {
+                return CardProdutoWidget(
+                  idProduto: controller.listaProdutos.value[index].id,
+                  nomeProduto: controller.listaProdutos.value[index].nome,
+                  categoriaProduto: controller
+                      .listaProdutos.value[index].categoriaProduto.descricao,
+                  tipoProduto: controller
+                      .listaProdutos.value[index].tipoProduto.descricao,
+                  valor: controller.listaProdutos.value[index].valor.toString(),
+                );
+              },
+            );
+          },
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Modular.to.pushNamed('/AddProduto');
+          },
+        ),
       ),
-      body: Observer(
-        builder: (_) {
-          if (controller.listaProdutos.hasError) {
-            return Center(
-                child: Text("Ocorreu um erro ao realizar essa requisição."));
-          }
-          if (controller.listaProdutos.value == null) {
-            return Center(child: CircularProgressIndicator());
-          }
-          controller.listaProdutos.value.sort((produto1, produto2) => produto1
-              .nome
-              .toLowerCase()
-              .compareTo(produto2.nome.toLowerCase()));
-          return ListView.builder(
-            itemCount: controller.listaProdutos.value.length,
-            itemBuilder: (context, index) {
-              return CardProdutoWidget(
-                idProduto: controller.listaProdutos.value[index].id,
-                nomeProduto: controller.listaProdutos.value[index].nome,
-                categoriaProduto: controller
-                    .listaProdutos.value[index].categoriaProduto.descricao,
-                tipoProduto:
-                    controller.listaProdutos.value[index].tipoProduto.descricao,
-                valor: controller.listaProdutos.value[index].valor.toString(),
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Modular.to.pushNamed('/AddProduto');
-        },
-      ),
+      onWillPop: () async {
+        bool result = false;
+        await showDialog(
+          context: context,
+          child: AlertDialog(
+            content: Text("Você deseja mesmo sair?"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Sim"),
+                onPressed: () {
+                  result = true;
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text("Não"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+        return result;
+      },
     );
   }
 }
